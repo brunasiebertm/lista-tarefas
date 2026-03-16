@@ -1,47 +1,51 @@
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
+import { ref } from 'vue'
+const tarefas = ref([
+  {
+    id: 1,
+    tarefa: 'Tarefa 1',
+    status: 'concluida'
+  },
+  {
+    id: 2,
+    tarefa: 'Tarefa 2',
+    status: 'concluida',
+  },
+  {
+    id: 3,
+    tarefa: 'Tarefa 3',
+    status: 'pendente'
+  },
+  {
+    id: 4,
+    tarefa: 'Tarefa 4',
+    status: 'pendente'
+  }
+])
+const novaTarefa = ref('')
+
+function removerTarefa(item) {
+  let index = tarefas.value.findIndex((e) => e == item)
+  tarefas.value.splice(index, 1);
+}
+
+function adicionarTarefa() {
+  tarefas.value.push()
+}
+
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
-  </header>
-
-  <main>
-    <TheWelcome />
-  </main>
+  <div class="container">
+    <h1>Lista de Tarefas</h1>
+    <ul>
+      <li v-for="item in tarefas" :key="item.id">
+        {{ item.tarefa }}
+      </li>
+    </ul>
+    <input type="text" v-model="novaTarefa">
+    <button @click="tarefas.push(novaTarefa)">Adicionar</button>
+  </div>
 </template>
 
-<style scoped>
-header {
-  line-height: 1.5;
-}
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-}
-</style>
+<style scoped></style>
