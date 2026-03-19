@@ -24,15 +24,19 @@ const tarefas = ref([
 ])
 const filtro = ref('')
 
-function addTarefa(novaTarefa){
-  const id = tarefas.value [tarefas.value.length - 1].id + 1
-  console.log(id)
-  tarefas.value.push({id: id, tarefa: novaTarefa, status: 'pendente'})
+
+function addTarefa(novaTarefa) {
+
+  let id = 1
+  if (tarefas.value.length > 0) {
+    id = tarefas.value[tarefas.value.length - 1].id + 1
+  }
+  tarefas.value.push({ id: id, tarefa: novaTarefa, status: 'pendente' })
 }
 
-function editTarefa(id){
-  const novoNome = prompt("Insira o novo nome da tarefa:");
-  tarefas.value[id-1].tarefa = novoNome
+function editTarefa(id) {
+  const novoNome = prompt('Insira o novo nome da tarefa:')
+  tarefas.value[id - 1].tarefa = novoNome
 }
 
 const tarefasFiltradas = computed(() => {
@@ -42,29 +46,53 @@ const tarefasFiltradas = computed(() => {
     return tarefas.value
   }
 })
-
 const novaTarefa = ref('')
 
 function removerTarefa(item) {
   let index = tarefas.value.findIndex((e) => e == item)
   tarefas.value.splice(index, 1)
 }
+
+
+const concluidas = computed(() => {
+  return tarefas.value.filter(t => t.status === 'concluida').length
+})
+
+const pendentes = computed(() => {
+  return tarefas.value.filter(t => t.status === 'pendente').length
+})
 </script>
 
 <template>
   <div class="container">
     <h1>Lista de Tarefas</h1>
+    <input type="text" v-model="novaTarefa" />
+    <button @click="addTarefa(novaTarefa)">Adicionar</button>
     <ul>
-      <li v-for="item in tarefas" :key="item.id">
+      <li
+        v-for="item in tarefasFiltradas"
+        :key="item"
+        @click="item.status = item.status === 'concluida' ? 'pendente' : 'concluida'"
+        :class="{ concluida: item.status == 'concluida' }"
+      >
         {{ item.tarefa }} <button @click="editTarefa(item.id)">Edit</button>
         <button @click="removerTarefa(item)">Delete</button>
       </li>
+      <p v-if="tarefasFiltradas.length === 0">Nenhuma Tarefa Encontrada!</p>
     </ul>
-    <input type="text" v-model="novaTarefa" />
-    <button @click="addTarefa(novaTarefa)">Adicionar</button>
-    <p>Concluídas: {{  }}</p>
-    <p>Pendentes: {{  }}</p>
+
+    <input type="search" v-model="filtro" placeholder="filtrar tarefas">
+    <p>Concluídas: {{ concluidas }}</p>
+    <p>Pendentes: {{ pendentes }}</p>
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+li.concluida {
+  text-decoration: line-through;
+}
+
+li {
+  cursor: pointer;
+}
+</style>
