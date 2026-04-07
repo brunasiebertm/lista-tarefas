@@ -1,5 +1,8 @@
 <script setup>
 import { ref, computed } from 'vue'
+
+import tarefaChild from './components/TarefaChild.vue'
+
 const tarefas = ref([
   {
     id: 1,
@@ -69,15 +72,16 @@ const pendentes = computed(() => {
     <input type="text" v-model="novaTarefa" />
     <button @click="addTarefa(novaTarefa)">Adicionar</button>
     <ul>
-      <li
+      <tarefaChild
         v-for="item in tarefasFiltradas"
         :key="item"
         @click="item.status = item.status === 'concluida' ? 'pendente' : 'concluida'"
-        :class="{ concluida: item.status == 'concluida' }"
+        :status="item.status"
+        :nome="item.tarefa"
       >
         {{ item.tarefa }} <button @click="editTarefa(item.id)">Edit</button>
         <button @click="removerTarefa(item)">Delete</button>
-      </li>
+      </tarefaChild>
       <p v-if="tarefasFiltradas.length === 0">Nenhuma Tarefa Encontrada!</p>
     </ul>
 
@@ -88,11 +92,5 @@ const pendentes = computed(() => {
 </template>
 
 <style scoped>
-li.concluida {
-  text-decoration: line-through;
-}
 
-li {
-  cursor: pointer;
-}
 </style>
