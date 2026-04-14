@@ -2,6 +2,7 @@
 import { ref, computed } from 'vue'
 
 import tarefaChild from './components/TarefaChild.vue'
+import buttonChild from './components/ButtonChild.vue'
 
 const tarefas = ref([
   {
@@ -39,7 +40,10 @@ function addTarefa(novaTarefa) {
 
 function editTarefa(id) {
   const novoNome = prompt('Insira o novo nome da tarefa:')
-  tarefas.value[id - 1].tarefa = novoNome
+  if (novoNome.trim() != '') {
+    tarefas.value[id - 1].tarefa = novoNome
+  }
+
 }
 
 const tarefasFiltradas = computed(() => {
@@ -70,17 +74,13 @@ const pendentes = computed(() => {
   <div class="container">
     <h1>Lista de Tarefas</h1>
     <input type="text" v-model="novaTarefa" />
-    <button @click="addTarefa(novaTarefa)">Adicionar</button>
+    <buttonChild @click="addTarefa(novaTarefa)" :basic="'btn'">Adicionar</buttonChild>
     <ul>
-      <tarefaChild
-        v-for="item in tarefasFiltradas"
-        :key="item"
-        @click="item.status = item.status === 'concluida' ? 'pendente' : 'concluida'"
-        :status="item.status"
-        :nome="item.tarefa"
-      >
-        {{ item.tarefa }} <button @click="editTarefa(item.id)">Edit</button>
-        <button @click="removerTarefa(item)">Delete</button>
+      <tarefaChild v-for="item in tarefasFiltradas" :key="item"
+        @click="item.status = item.status === 'concluida' ? 'pendente' : 'concluida'" :status="item.status"
+        :nome="item.tarefa">
+        {{ item.tarefa }} <buttonChild @click="editTarefa(item.id)" :basic="'btn'">Edit</buttonChild>
+        <buttonChild @click="removerTarefa(item)" :basic="'btn'">Delete</buttonChild>
       </tarefaChild>
       <p v-if="tarefasFiltradas.length === 0">Nenhuma Tarefa Encontrada!</p>
     </ul>
@@ -91,6 +91,4 @@ const pendentes = computed(() => {
   </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>
